@@ -40,3 +40,12 @@ Copy and paste the following command to clone the repository:
 
 ```bash
 git clone https://github.com/Ashisharjun12/uber-microservice.git
+```
+
+Use Docker  for pull PostgreSQL and Redis Images
+
+```bash
+docker-compose up --build
+```
+
+
