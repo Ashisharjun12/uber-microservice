@@ -33,3 +33,5 @@ A scalable Node.js microservices-based ride-sharing platform using Express, Rabb
 ## Quick Start
 
 1. Clone the repository
+ 
+ ` git clone https://github.com/Ashisharjun12/uber-microservice.git`
