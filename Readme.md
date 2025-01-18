@@ -10,7 +10,7 @@ A scalable Node.js microservices-based ride-sharing platform using Express, Rabb
 - **API Gateway**: An Express-based gateway for routing and authentication.
 - **User Service**: Handles user management and authentication.
 - **Ride Service**: Manages ride requests and driver matching.
-- **Capital Service**: Processes payments and financial transactions.
+- **Capitain Service**: captian service management 
 
 ### Tech Stack
 - **Runtime**: Node.js
