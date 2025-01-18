@@ -7,10 +7,10 @@ A scalable Node.js microservices-based ride-sharing platform using Express, Rabb
 ## System Architecture
 
 ### Microservices
-- **API Gateway**: Express-based gateway for routing and authentication
-- **User Service**: Handles user management and authentication
-- **Ride Service**: Manages ride requests and driver matching
-- **Capital Service**: Processes payments and financial transactions
+- **API Gateway**: An Express-based gateway for routing and authentication.
+- **User Service**: Handles user management and authentication.
+- **Ride Service**: Manages ride requests and driver matching.
+- **Capital Service**: Processes payments and financial transactions.
 
 ### Tech Stack
 - **Runtime**: Node.js
@@ -24,25 +24,19 @@ A scalable Node.js microservices-based ride-sharing platform using Express, Rabb
 
 ## Prerequisites
 
-- Node.js (v18 or higher)
-- Docker and Docker Compose
-- AWS CLI configured
-- PostgreSQL
-- RabbitMQ
+Ensure you have the following installed and configured:
+
+- **Node.js** (v18 or higher)
+- **Docker** and **Docker Compose**
+- **AWS CLI** (configured)
+- **PostgreSQL**
+- **RabbitMQ**
 
 ## Quick Start
 
-1. Clone the repository
-  
- - ` git clone https://github.com/Ashisharjun12/uber-microservice.git`
+### Clone the Repository
 
- 
-The key is to always specify the language/format after the opening triple backticks. Here are the common ones to use:
+Copy and paste the following command to clone the repository:
 
-- `bash` for terminal commands
-- `yaml` for Docker/configuration files
-- `env` for environment variables
-- `http` for API endpoints
-- `javascript` or `js` for JavaScript code
-- `json` for JSON data
-- `sql` for database queries
+```bash
+git clone https://github.com/Ashisharjun12/uber-microservice.git
