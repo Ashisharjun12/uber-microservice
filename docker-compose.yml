@@ -42,7 +42,17 @@ services:
       RABBITMQ_URL: amqp://@rabbitmq:5672
       DATABASE_URL: postgresql://postgres:postgres@captain-db:5432/captain_service
 
-
+  # Add RabbitMQ service
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"  # AMQP protocol port
+      - "15672:15672"  # Management UI port
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
 
   # postgres  database  for each service
 
