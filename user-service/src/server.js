@@ -7,6 +7,7 @@ import { _config } from "./config/config.js";
 import logger from "./utils/logger.js";
 import  errorHandler from "./middleware/errorHandler.js";
 import UserRoute from "./routes/UserRoute.js";
+import accessLogStream from "./utils/morgan.js";
 
 const app = express();
 
@@ -16,7 +17,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
-app.use(morgan('combined')); 
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+  stream: accessLogStream
+}));
 
 
 //routes

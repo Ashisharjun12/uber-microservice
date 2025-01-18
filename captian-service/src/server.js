@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import morgan from "morgan";
 import captianRoute from "./routes/captianRoute.js";
+import accessLogStream from "./utils/morgan.js";
 
 
 
@@ -17,7 +18,9 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
-app.use(morgan('combined')); 
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+  stream: accessLogStream
+})); 
 
 //routes
 app.use("/", captianRoute);

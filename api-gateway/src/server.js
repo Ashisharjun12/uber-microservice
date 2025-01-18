@@ -6,6 +6,7 @@ import logger from "./utils/logger.js";
 import errorHandler from "./middleware/errorhandler.js";
 import { _config } from "./config/config.js";
 import expressProxy from "express-http-proxy";
+import accessLogStream from "./utils/morgan.js";
 
 const app = express();
 const PORT = _config.PORT ?? 3000;
@@ -13,7 +14,9 @@ const PORT = _config.PORT ?? 3000;
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(morgan('combined')); 
+app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {
+    stream: accessLogStream
+})); 
 
 //proxy routes
 
