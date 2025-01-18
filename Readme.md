@@ -33,5 +33,16 @@ A scalable Node.js microservices-based ride-sharing platform using Express, Rabb
 ## Quick Start
 
 1. Clone the repository
+  
+ - ` git clone https://github.com/Ashisharjun12/uber-microservice.git`
+
  
- ` git clone https://github.com/Ashisharjun12/uber-microservice.git`
+The key is to always specify the language/format after the opening triple backticks. Here are the common ones to use:
+
+- `bash` for terminal commands
+- `yaml` for Docker/configuration files
+- `env` for environment variables
+- `http` for API endpoints
+- `javascript` or `js` for JavaScript code
+- `json` for JSON data
+- `sql` for database queries
