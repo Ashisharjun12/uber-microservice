@@ -1,4 +1,12 @@
 import winston from "winston";
+import fs from "fs";
+import path from "path";
+
+// Create logs directory if it doesn't exist
+const logDir = 'logs';
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir);
+}
 
 const logger = winston.createLogger({
   level: process.env.NODE_ENV !== "production" ? "debug" : "info",
@@ -9,7 +17,7 @@ const logger = winston.createLogger({
     winston.format.json()
   ),
   defaultMeta: {
-    service: "captain-service",
+    service: "captian-service",
   },
   transports: [
     new winston.transports.Console({
@@ -18,8 +26,13 @@ const logger = winston.createLogger({
         winston.format.simple()
       ),
     }),
-    new winston.transports.File({ filename: "error.log", level: "error" }),
-    new winston.transports.File({ filename: "combined.log" }),
+    new winston.transports.File({ 
+      filename: path.join(logDir, 'error.log'), 
+      level: "error" 
+    }),
+    new winston.transports.File({ 
+      filename: path.join(logDir, 'combined.log') 
+    }),
   ],
 });
 

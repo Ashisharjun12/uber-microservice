@@ -2,11 +2,13 @@
   "name": "ride-service",
   "version": "1.0.0",
   "main": "src/server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "db:generate": "drizzle-kit generate --config=drizzle.config.js",
-    "db:run": "node ./migrate.js"
+    "db:run": "node ./migrate.js",
+    "db:studio": "drizzle-kit studio"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +23,7 @@
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "logger": "^0.0.1",
+    "morgan": "^1.10.0",
     "postgres": "^3.4.5",
     "winston": "^3.17.0",
     "zod": "^3.24.1"

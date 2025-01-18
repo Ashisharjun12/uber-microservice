@@ -4,6 +4,7 @@ import logger from "./utils/logger.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
+import morgan from "morgan";
 import captianRoute from "./routes/captianRoute.js";
 
 
@@ -16,6 +17,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
+app.use(morgan('combined')); 
 
 //routes
 app.use("/", captianRoute);

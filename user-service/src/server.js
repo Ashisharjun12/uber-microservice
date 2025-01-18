@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
+import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import { _config } from "./config/config.js";
 import logger from "./utils/logger.js";
@@ -15,6 +16,7 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(helmet());
+app.use(morgan('combined')); 
 
 
 //routes

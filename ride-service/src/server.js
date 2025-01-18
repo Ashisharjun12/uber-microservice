@@ -2,6 +2,7 @@ import express from "express"
 import { _config } from "./config/config.js";
 import logger from "./utils/logger.js"; 
 import cors from "cors";
+import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import rideRoute from "./routes/rideRoute.js";
@@ -12,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(helmet());
+app.use(morgan('combined')); 
 
 app.use('/' , rideRoute)
 

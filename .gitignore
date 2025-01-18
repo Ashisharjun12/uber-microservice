@@ -34,6 +34,9 @@ Thumbs.db
 logs/
 *.log
 
+# Certs
+certs/
+
 # Optional npm cache directory
 .npm
 
