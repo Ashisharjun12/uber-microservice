@@ -1,16 +1,89 @@
 version: '3.8'
+
 services:
-#postgres
-  db:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - 3000:3000
+    env_file: ./api-gateway/.env
+    depends_on:
+      - rabbitmq
+      - postgres
+    environment:
+      RABBITMQ_URL: amqp://@rabbitmq:5672
+
+  user-service:
+    build: ./user-service
+    env_file: ./user-service/.env
+    depends_on:
+      - user-db
+      - rabbitmq
+    environment:
+      RABBITMQ_URL: amqp://@rabbitmq:5672
+      DATABASE_URL: postgresql://postgres:postgres@user-db:5432/user_service
+
+  ride-service:
+    build: ./ride-service
+    env_file: ./ride-service/.env
+    depends_on:
+      - ride-db
+      - rabbitmq
+    environment:
+      RABBITMQ_URL: amqp://@rabbitmq:5672
+      DATABASE_URL: postgresql://postgres:postgres@ride-db:5432/ride_service
+
+  captain-service:
+    build: ./captain-service
+    env_file: ./captain-service/.env
+    depends_on:
+      - captain-db
+      - rabbitmq
+    environment:
+      RABBITMQ_URL: amqp://@rabbitmq:5672
+      DATABASE_URL: postgresql://postgres:postgres@captain-db:5432/captain_service
+
+
+
+  # postgres  database  for each service
+
+
+# user-db
+  user-db:
     image: postgres
     restart: always
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - ./data/user-db:/var/lib/postgresql/data
     ports:
-      - 5432:5432  # make sure you don't have another container running on 5432
-
+      - 5432:5432
     environment:
-      - POSTGRES_DB=uber
+      - POSTGRES_DB=user_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+
+# ride-db
+  ride-db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./data/ride-db:/var/lib/postgresql/data
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_DB=ride_service
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+
+# captain-db
+  captain-db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./data/captain-db:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
+    environment:
+      - POSTGRES_DB=captain_service
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
@@ -19,8 +92,4 @@ services:
     restart: always
     ports:
       - 8080:8080
-
-    
-
-
 
