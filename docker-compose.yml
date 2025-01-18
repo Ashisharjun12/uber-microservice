@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   api-gateway:
     build: ./api-gateway
@@ -8,7 +6,10 @@ services:
     env_file: ./api-gateway/.env
     depends_on:
       - rabbitmq
-      - postgres
+      - user-db
+      - ride-db
+      - captian-db
+      
     environment:
       RABBITMQ_URL: amqp://@rabbitmq:5672
 
@@ -33,14 +34,14 @@ services:
       DATABASE_URL: postgresql://postgres:postgres@ride-db:5432/ride_service
 
   captain-service:
-    build: ./captain-service
-    env_file: ./captain-service/.env
+    build: ./captian-service
+    env_file: ./captian-service/.env
     depends_on:
-      - captain-db
+      - captian-db
       - rabbitmq
     environment:
       RABBITMQ_URL: amqp://@rabbitmq:5672
-      DATABASE_URL: postgresql://postgres:postgres@captain-db:5432/captain_service
+      DATABASE_URL: postgresql://postgres:postgres@captian-db:5432/captian_service
 
   # Add RabbitMQ service
   rabbitmq:
@@ -85,15 +86,15 @@ services:
       - POSTGRES_PASSWORD=postgres
 
 # captain-db
-  captain-db:
+  captian-db:
     image: postgres
     restart: always
     volumes:
-      - ./data/captain-db:/var/lib/postgresql/data
+      - ./data/captian-db:/var/lib/postgresql/data
     ports:
       - 5434:5432
     environment:
-      - POSTGRES_DB=captain_service
+      - POSTGRES_DB=captian_service
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
 
