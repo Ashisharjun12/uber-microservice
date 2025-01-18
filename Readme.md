@@ -45,7 +45,7 @@ git clone https://github.com/Ashisharjun12/uber-microservice.git
 Use Docker  for pull PostgreSQL and Redis Images
 
 ```bash
-docker-compose up --build
+docker-compose up -d
 ```
 
 
