@@ -27,7 +27,7 @@ app.use("/", captianRoute);
 
 app.listen(_config.PORT, () => {
   logger.info(`captian service is running on port ${_config.PORT}`);
-  logger.info(`redis is running on port ${_config.REDIS_URL}`);
+ 
 
 });
 

@@ -2,8 +2,6 @@ import { user } from "../models/User.js";
 import { db } from "../config/database.js";
 import bcrypt from "bcrypt";
 import { generateAccessToken ,generateRefreshToken} from "../service/tokenService.js";
-
-import { redis } from "../config/redis.js";
 import logger from "../utils/logger.js";
 import { eq } from "drizzle-orm";
 import { accessTokenOptions, refreshTokenOptions } from "../utils/cookieToken.js";
@@ -69,8 +67,7 @@ export const RegisterUser = async (req, res) => {
     res.cookie("access_token", accessToken, accessTokenOptions);
     res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
-    //update in redis
-    await redis.set(newUser.id, JSON.stringify(newUser));
+
 
 
     return res

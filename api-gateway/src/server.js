@@ -41,7 +41,7 @@ app.listen(PORT, () => {
   logger.info(`User Service is running on port ${_config.USER_SERVICE_URL}`);
   logger.info(`Captian Service is running on port ${_config.CAPTIAN_SERVICE_URL}`);
   logger.info(`Ride Service is running on port ${_config.RIDE_SERVICE_URL}`);
-  logger.info(`Redis is running on port ${_config.REDIS_URL}`);
+
 });
 
 //unhandle rejection

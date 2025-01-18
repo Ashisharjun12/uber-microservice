@@ -29,7 +29,6 @@ app.use(errorHandler);
 app.listen(_config.PORT, () => {
   logger.info(`User service is running on port ${_config.PORT}`);
   logger.info(`Database is running on port ${_config.DATABASE_URI}`);
-  logger.info(`Redis is running on port ${_config.REDIS_URL}`);
 
 });
 
