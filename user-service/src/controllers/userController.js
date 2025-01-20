@@ -5,6 +5,38 @@ import { generateAccessToken ,generateRefreshToken} from "../service/tokenServic
 import logger from "../utils/logger.js";
 import { eq } from "drizzle-orm";
 import { accessTokenOptions, refreshTokenOptions } from "../utils/cookieToken.js";
+
+
+//generate access and refresh token
+const generateAccessAndRefreshToken = async (userPayload) => {
+ try {
+   const accessToken = generateAccessToken({
+     id: userPayload.id,
+     email: userPayload.email,
+     role: userPayload.role,
+   });
+   const refreshToken = generateRefreshToken({
+     id: userPayload.id,
+     email: userPayload.email,
+     role: userPayload.role,
+   });
+
+   //refreshtoken update in db
+   await db
+     .update(user)
+     .set({ refreshToken: refreshToken })
+     .where(eq(user.id, userPayload.id));
+
+   return { accessToken, refreshToken };
+
+
+ } catch (error) {
+  logger.error("Error generating access and refresh token", error);
+  throw error;
+  
+ }
+}
+
 export const RegisterUser = async (req, res) => {
   try {
     logger.info("Registering user route hitting....", req.body);
@@ -46,29 +78,13 @@ export const RegisterUser = async (req, res) => {
     }
 
     //generate access and refresh token
-    const accessToken = generateAccessToken({
-      id: newUser.id,
-      email: newUser.email,
-      role: newUser.role,
-    });
-    const refreshToken = generateRefreshToken({
-      id: newUser.id,
-      email: newUser.email,
-      role: newUser.role,
-    });
-
-    //refreshtoken update in db
-    await db
-      .update(user)
-      .set({ refreshToken: refreshToken })
-      .where(eq(user.id, newUser.id));
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(newUser);
 
     //set cookies
     res.cookie("access_token", accessToken, accessTokenOptions);
     res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
-
-
+   
 
     return res
       .status(201)
@@ -105,23 +121,9 @@ export const LoginUser = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    //generate access and refresh token
-    const accessToken = generateAccessToken({
-      id: loggedInUser.id,
-      email: loggedInUser.email,
-      role: loggedInUser.role,
-    });
-    const refreshToken = generateRefreshToken({
-      id: loggedInUser.id,
-      email: loggedInUser.email,
-      role: loggedInUser.role,
-    });
 
-    //refreshtoken update in db
-    await db
-      .update(user)
-      .set({ refreshToken: refreshToken })
-      .where(eq(user.id, loggedInUser.id));
+    //generate access and refresh token
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(loggedInUser);
 
     //set cookies
     res.cookie("access_token", accessToken, accessTokenOptions);
@@ -148,3 +150,20 @@ export const LogoutUser = async (req, res) => {
   }
 }
 
+
+export const getProfile = async (req, res) => {
+  try {
+    logger.info("Get profile route hitting....", req.body);
+    const user = req.user.id
+    const userProfile = await db.select().from(user).where(eq(user.id , user))
+    console.log(userProfile)
+    return res.status(200).json({ message: "Profile fetched successfully", user: userProfile });
+  } catch (error) {
+    logger.error("Error fetching profile", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+
+
+//get publickey constroller

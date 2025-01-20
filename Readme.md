@@ -47,5 +47,10 @@ Use Docker  for pull PostgreSQL and Redis Images
 ```bash
 docker-compose up -d
 ```
+for down docker composer
+
+```bash
+docker-compose down 
+```
 
 

@@ -1,6 +1,6 @@
 {
-  "id": "19e4b59b-999f-463f-97ae-de8271d05058",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "227c1c0b-fa8c-4811-b5ed-5ec0021acd59",
+  "prevId": "f5c2f57a-6769-4cbf-a6fd-56c4fda377ad",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -29,6 +29,12 @@
         "password": {
           "name": "password",
           "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
           "primaryKey": false,
           "notNull": true
         },

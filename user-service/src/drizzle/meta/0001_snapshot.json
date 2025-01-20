@@ -1,6 +1,6 @@
 {
-  "id": "19e4b59b-999f-463f-97ae-de8271d05058",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "3caacc93-179d-42f9-94ea-e1c846511c50",
+  "prevId": "19e4b59b-999f-463f-97ae-de8271d05058",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -29,6 +29,12 @@
         "password": {
           "name": "password",
           "type": "varchar(60)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gender": {
+          "name": "gender",
+          "type": "varchar(12)",
           "primaryKey": false,
           "notNull": true
         },

@@ -1,6 +1,6 @@
 {
-  "id": "19e4b59b-999f-463f-97ae-de8271d05058",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "f2e7e692-95bb-48f8-b31f-0940d017ca9f",
+  "prevId": "227c1c0b-fa8c-4811-b5ed-5ec0021acd59",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -31,6 +31,13 @@
           "type": "varchar(60)",
           "primaryKey": false,
           "notNull": true
+        },
+        "age": {
+          "name": "age",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
         },
         "role": {
           "name": "role",
