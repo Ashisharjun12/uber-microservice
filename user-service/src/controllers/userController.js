@@ -176,15 +176,33 @@ export const LogoutUser = async (req, res) => {
   }
 };
 
-export const getProfile = async (req, res) => {
+export const getAllUsers = async (req, res) => {
   try {
     logger.info("Get profile route hitting....", req.body);
-    const user = req.user.id;
-    const userProfile = await db.select().from(user).where(eq(user.id, user));
-    console.log(userProfile);
+    const getUsers = await db.select().from(user)
+    
     return res
       .status(200)
-      .json({ message: "Profile fetched successfully", user: userProfile });
+      .json({ message: "Profile fetched successfully", users: getUsers });
+  } catch (error) {
+    logger.error("Error fetching profile", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+//get user by id
+export const getUserById = async (req, res) => {
+  try {
+    logger.info("Get user by id route hitting....", req.body);
+
+    const userId = req.params.id;
+
+    const getUser = await db.select().from(user).where(eq(user.id, userId))
+
+    return res.status(200).json({ message: "User fetched successfully", user: getUser });
+
+
   } catch (error) {
     logger.error("Error fetching profile", error);
     return res.status(500).json({ message: "Internal server error" });

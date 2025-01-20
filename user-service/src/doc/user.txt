@@ -1,0 +1,49 @@
+
+##user controller logics
+
+
+//register user
+1/get emai ,password from fronted 
+2.check in db user exist from that email if exist throw error
+3. cretae a user entry in db
+4.generate tokens and cookies 
+5. send resposne
+
+//login user
+1.get email ,password  for login
+2.check in db user exist from that email or not in db
+3. login user
+4. generate acces and refresh token
+5.send resposne
+
+
+//logout user
+1.get user id from authentication middleware
+2.find user from db and update refresh token to set null value
+3. clear access token from cookie 
+4.send resposne
+
+
+//generate new access token when session ends
+1. get old refresh token from frontedn or cookies
+2. verify refresh token from jwt
+3.db call get user and match refresh token of db to incoming refresh token
+4.generate new access token
+5.set cookie of access tokens
+
+//get user by id
+1.get user id from req.params.id or from fronted
+2.db call check user in db with this id
+3. send response
+
+//get all  users
+1.db call get all users
+2.send response
+
+##Profile controller logics
+
+//get user profile
+1.get user id from authentication middleware
+2.find logged user from db by id
+3. send resposne
+
