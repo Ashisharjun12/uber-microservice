@@ -1,42 +1,48 @@
 import { user } from "../models/User.js";
 import { db } from "../config/database.js";
+import jwt from "jsonwebtoken";
+import { _config } from "../config/config.js";
 import bcrypt from "bcrypt";
-import { generateAccessToken ,generateRefreshToken} from "../service/tokenService.js";
+import {
+  generateAccessToken,
+  generateRefreshToken,
+} from "../service/tokenService.js";
 import logger from "../utils/logger.js";
 import { eq } from "drizzle-orm";
-import { accessTokenOptions, refreshTokenOptions } from "../utils/cookieToken.js";
+import {
+  accessTokenOptions,
+  refreshTokenOptions,
+} from "../utils/cookieToken.js";
 
-
-//generate access and refresh token
+//generate access and refresh token method
 const generateAccessAndRefreshToken = async (userPayload) => {
- try {
-   const accessToken = generateAccessToken({
-     id: userPayload.id,
-     email: userPayload.email,
-     role: userPayload.role,
-   });
-   const refreshToken = generateRefreshToken({
-     id: userPayload.id,
-     email: userPayload.email,
-     role: userPayload.role,
-   });
+  logger.info("Generating access and refresh token", userPayload);
+  try {
+    const accessToken = generateAccessToken({
+      id: userPayload.id,
+      email: userPayload.email,
+      role: userPayload.role,
+    });
+    const refreshToken = generateRefreshToken({
+      id: userPayload.id,
+      email: userPayload.email,
+      role: userPayload.role,
+    });
 
-   //refreshtoken update in db
-   await db
-     .update(user)
-     .set({ refreshToken: refreshToken })
-     .where(eq(user.id, userPayload.id));
+    //refreshtoken update in db
+    await db
+      .update(user)
+      .set({ refreshToken: refreshToken })
+      .where(eq(user.id, userPayload.id));
 
-   return { accessToken, refreshToken };
+    return { accessToken, refreshToken };
+  } catch (error) {
+    logger.error("Error generating access and refresh token", error);
+    throw error;
+  }
+};
 
-
- } catch (error) {
-  logger.error("Error generating access and refresh token", error);
-  throw error;
-  
- }
-}
-
+//register user controller
 export const RegisterUser = async (req, res) => {
   try {
     logger.info("Registering user route hitting....", req.body);
@@ -60,35 +66,35 @@ export const RegisterUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     //create user
-    await db.insert(user).values({
-      name,
-      email,
-      password: hashedPassword,
-      role: "user",
-    });
-
-    // Get the created user
     const [newUser] = await db
-      .select()
-      .from(user)
-      .where(eq(user.email, email));
+      .insert(user)
+      .values({
+        name,
+        email,
+        password: hashedPassword,
+        role: "user",
+      })
+      .returning();
 
     if (!newUser) {
       return res.status(500).json({ message: "Error creating user" });
     }
 
     //generate access and refresh token
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(newUser);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+      newUser
+    );
 
     //set cookies
     res.cookie("access_token", accessToken, accessTokenOptions);
     res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
-   
-
-    return res
-      .status(201)
-      .json({ message: "User registered successfully", user: newUser });
+    return res.status(201).json({
+      message: "User registered successfully",
+      user: newUser,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
   } catch (error) {
     logger.error("Error registering user", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -105,33 +111,42 @@ export const LoginUser = async (req, res) => {
     }
 
     //check if user exists
-    const userExists = await db.select().from(user).where(eq(user.email , email))
-    
-    if(!userExists){
+    const userExists = await db
+      .select()
+      .from(user)
+      .where(eq(user.email, email));
+
+    if (!userExists) {
       return res.status(400).json({ message: "User does not exist" });
     }
 
     //get user
     const loggedInUser = userExists[0];
-   
 
     //compare password
-    const isPasswordCorrect = await bcrypt.compare(password , loggedInUser.password)
-    if(!isPasswordCorrect){
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      loggedInUser.password
+    );
+    if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-
     //generate access and refresh token
-    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(loggedInUser);
+    const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+      loggedInUser
+    );
 
     //set cookies
     res.cookie("access_token", accessToken, accessTokenOptions);
     res.cookie("refresh_token", refreshToken, refreshTokenOptions);
 
-    return res.status(200).json({ message: "User logged in successfully" , user: loggedInUser });  
-
-    
+    return res.status(200).json({
+      message: "User logged in successfully",
+      user: loggedInUser,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
+    });
   } catch (error) {
     logger.error("Error logging in user", error);
     return res.status(500).json({ message: "Internal server error" });
@@ -141,29 +156,96 @@ export const LoginUser = async (req, res) => {
 export const LogoutUser = async (req, res) => {
   try {
     logger.info("Logout user route hitting....", req.body);
-   
+    //get user id from authenticate middleware
+    const userId = req.user.id;
 
+    //clear cookies
+    res.clearCookie("access_token");
+    res.clearCookie("refresh_token");
 
+    //update refresh token in db
+    await db
+      .update(user)
+      .set({ refreshToken: null })
+      .where(eq(user.id, userId));
+
+    return res.status(200).json({ message: "User logged out successfully" });
   } catch (error) {
     logger.error("Error logging out user", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
-
+};
 
 export const getProfile = async (req, res) => {
   try {
     logger.info("Get profile route hitting....", req.body);
-    const user = req.user.id
-    const userProfile = await db.select().from(user).where(eq(user.id , user))
-    console.log(userProfile)
-    return res.status(200).json({ message: "Profile fetched successfully", user: userProfile });
+    const user = req.user.id;
+    const userProfile = await db.select().from(user).where(eq(user.id, user));
+    console.log(userProfile);
+    return res
+      .status(200)
+      .json({ message: "Profile fetched successfully", user: userProfile });
   } catch (error) {
     logger.error("Error fetching profile", error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
+};
 
+//refresh access token
 
+export const refreshAccessToken = async (req, res) => {
+  try {
+    logger.info("Refresh access token route hitting....", req.body);
+    //get refresh token from cookies or body
+    const IncomingRefreshToken =
+      req.cookies?.refresh_token || req.body.refreshToken;
 
-//get publickey constroller
+    if (!IncomingRefreshToken) {
+      return res.status(401).json({ message: "Unauthorized Refresh Token" });
+    }
+
+    //verify refresh token
+    const decoded = jwt.verify(
+      IncomingRefreshToken,
+      _config.REFRESH_TOKEN_SECRET
+    );
+
+    if (!decoded) {
+      return res.status(401).json({ message: "Unauthorized Refresh Token" });
+    }
+
+    //get user from db
+    const getUser = await db.select().from(user).where(eq(user.id, decoded.id));
+
+    if (!getUser) {
+      return res.status(401).json({ message: "Unauthorized Refresh Token" });
+    }
+
+    const storedUser = getUser[0];
+
+    //check if refresh token is valid
+    if (storedUser.refreshToken !== IncomingRefreshToken) {
+      return res.status(401).json({ message: "Unauthorized Refresh Token" });
+    }
+
+    //generate access token
+    const accessToken = generateAccessToken({
+      id: storedUser.id,
+      email: storedUser.email,
+      role: storedUser.role,
+    });
+
+    //set access token in cookies
+    res.cookie("access_token", accessToken, accessTokenOptions);
+
+    return res
+      .status(200)
+      .json({
+        message: "Access Token Refreshed Successfully",
+        accessToken: accessToken,
+      });
+  } catch (error) {
+    logger.error("Error refreshing access token", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};

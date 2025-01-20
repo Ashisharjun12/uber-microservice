@@ -1,20 +1,26 @@
 import { Router } from "express";
-import { RegisterUser, LoginUser, getProfile, LogoutUser } from "../controllers/userController.js";
-import { authMiddleware } from "../middleware/authMiddleware.js";
+import {
+  RegisterUser,
+  LoginUser,
+  getProfile,
+  LogoutUser,
+  refreshAccessToken,
+} from "../controllers/userController.js";
+import { authenticate } from "../middleware/authenticate.js";
 
 const router = Router();
 
-
-
+//public routes
 router.post("/register", RegisterUser);
 router.post("/login", LoginUser);
-router.post("/logout", LogoutUser);
 
-//get publickey
-router.get("/self", getPublicKey);
-
+//private routes
+router.post("/logout", authenticate, LogoutUser);
 
 //get user
-router.get("/me", authMiddleware, getProfile);
+router.get("/me", authenticate, getProfile);
+
+//refresh access token
+router.get("/refresh", refreshAccessToken);
 
 export default router;
