@@ -7,7 +7,7 @@
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
     "db:generate": "drizzle-kit generate --config=drizzle.config.js",
-    "db:run": "node ./migrate.js",
+    "db:migrate": "node ./migrate.js",
     "db:studio": "drizzle-kit studio"
   },
   "keywords": [],

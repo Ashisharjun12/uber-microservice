@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { uuid, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { uuid, pgTable, text, varchar, timestamp } from "drizzle-orm/pg-core";
 
 export const user = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -8,6 +8,6 @@ export const user = pgTable("users", {
   password: varchar("password", { length: 60 }).notNull(),
   role: varchar("role", { length: 12 }).notNull().default("user"),
   refreshToken: varchar("refresh_token", { length: 1000 }),
-  updatedAt: varchar("updated_at").default(sql`CURRENT_TIMESTAMP`),
-  createdAt: varchar("created_at").default(sql`CURRENT_TIMESTAMP`),
+  createdAt: timestamp("created_at", {withTimezone:true}).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", {withTimezone:true}).defaultNow().notNull(),
 });

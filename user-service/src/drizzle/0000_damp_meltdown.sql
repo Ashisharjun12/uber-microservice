@@ -2,9 +2,9 @@ CREATE TABLE "locations" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"pick_up_location" text NOT NULL,
 	"drop_location" text NOT NULL,
-	"user_id" uuid,
-	"updated_at" varchar DEFAULT CURRENT_TIMESTAMP,
-	"created_at" varchar DEFAULT CURRENT_TIMESTAMP
+	"user_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "profiles" (
@@ -13,8 +13,8 @@ CREATE TABLE "profiles" (
 	"profile_image" text,
 	"user_id" uuid,
 	"location_id" uuid,
-	"updated_at" varchar DEFAULT CURRENT_TIMESTAMP,
-	"created_at" varchar DEFAULT CURRENT_TIMESTAMP
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
 CREATE TABLE "users" (
@@ -24,8 +24,8 @@ CREATE TABLE "users" (
 	"password" varchar(60) NOT NULL,
 	"role" varchar(12) DEFAULT 'user' NOT NULL,
 	"refresh_token" varchar(1000),
-	"updated_at" varchar DEFAULT CURRENT_TIMESTAMP,
-	"created_at" varchar DEFAULT CURRENT_TIMESTAMP,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
